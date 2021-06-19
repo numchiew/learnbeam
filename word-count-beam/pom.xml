@@ -462,6 +462,13 @@
       <version>${beam.version}</version>
       <scope>test</scope>
     </dependency>
+    <!-- The Dataflow runner -->
+    <dependency>
+      <groupId>org.apache.beam</groupId>
+      <artifactId>beam-runners-google-cloud-dataflow-java</artifactId>
+      <version>${beam.version}</version>
+      <scope>runtime</scope>
+    </dependency>
 
     <dependency>
       <groupId>org.mockito</groupId>

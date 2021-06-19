@@ -7,11 +7,12 @@ import org.apache.beam.sdk.transforms.PTransform;
 import org.apache.beam.sdk.transforms.ParDo;
 import org.apache.beam.sdk.values.KV;
 import org.apache.beam.sdk.values.PCollection;
+import org.joda.time.DateTime;
 
-public class SumCovidCase extends PTransform<PCollection<String>, PCollection<String>> {
+public class SumCovidCase extends PTransform<PCollection<String>, PCollection<CovidSummary>> {
 
   @Override
-  public PCollection<String> expand(PCollection<String> input) {
+  public PCollection<CovidSummary> expand(PCollection<String> input) {
     //        .apply("Sum count", MapElements.via(new SumPerKey()))
 
     return input
@@ -21,9 +22,9 @@ public class SumCovidCase extends PTransform<PCollection<String>, PCollection<St
 
   }
 
-  public static class sumPerKey extends DoFn<KV<String, Iterable<Covid>>, String> {
+  public static class sumPerKey extends DoFn<KV<String, Iterable<Covid>>, CovidSummary> {
     @ProcessElement
-    public void processElement(@Element KV<String, Iterable<Covid>> element, OutputReceiver<String> output) {
+    public void processElement(@Element KV<String, Iterable<Covid>> element, OutputReceiver<CovidSummary> output) {
       System.out.println(element.getKey());
       Iterable<Covid> covidList = element.getValue();
       AtomicInteger sumTotal = new AtomicInteger();
@@ -31,8 +32,8 @@ public class SumCovidCase extends PTransform<PCollection<String>, PCollection<St
         sumTotal.addAndGet(covid.getConfirmCase());
       });
       String[] outputVal = element.getKey().split("_");
-      String outputMsg = "Date : " + outputVal[0] + " " + outputVal[1] + " " + sumTotal;
-      output.output(outputMsg);
+
+      output.output(new CovidSummary(new DateTime(outputVal[0]), outputVal[1], sumTotal.intValue()));
     }
 
   }
