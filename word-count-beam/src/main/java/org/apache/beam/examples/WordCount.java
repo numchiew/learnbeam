@@ -115,7 +115,8 @@ public class WordCount {
   /** A SimpleFunction that converts a Word and Count into a printable string. */
   public static class FormatAsTextFn extends SimpleFunction<KV<String, Long>, String> {
     @Override
-    public String apply(KV<String, Long> input) {
+    public String apply(KV<String, Long> input)
+    {
       return input.getKey() + ": " + input.getValue();
     }
   }
@@ -135,11 +136,26 @@ public class WordCount {
 
       // Convert lines of text into individual words.
       PCollection<String> words = lines.apply(ParDo.of(new ExtractWordsFn()));
+//      OutputT apply = words.apply(new printDoFn());
 
       // Count the number of times each word occurs.
-      PCollection<KV<String, Long>> wordCounts = words.apply(Count.perElement());
+//      PCollection<KV<String, Long>> wordCounts = words.apply(Count.perElement());
 
-      return wordCounts;
+
+      return lines.apply(ParDo.of(new ExtractWordsFn()))
+              .apply(ParDo.of(new printDoFn()))
+          .apply(Count.perKey());
+//              .apply(Count.perElement());
+    }
+  }
+
+  static class printDoFn extends DoFn<String, KV<String, String>> {
+    @ProcessElement
+    public void processElement(ProcessContext context) {
+      String element = context.element();
+      System.out.println(element);
+      context.output(KV.of(element, element));
+
     }
   }
 
@@ -159,7 +175,8 @@ public class WordCount {
      * this option to choose a different input file or glob.
      */
     @Description("Path of the file to read from")
-    @Default.String("gs://apache-beam-samples/shakespeare/kinglear.txt")
+//    @Default.String("gs://apache-beam-samples/shakespeare/kinglear.txt")
+    @Required
     String getInputFile();
 
     void setInputFile(String value);
