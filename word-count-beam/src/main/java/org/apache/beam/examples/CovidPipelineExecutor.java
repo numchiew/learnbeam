@@ -27,14 +27,14 @@ public class CovidPipelineExecutor {
 
     p.apply("ReadLines", TextIO.read().from(options.getInputFile()))
         .apply("Group per key and state then sum", new SumCovidCase())
-//        .apply("map to string", MapElements.via(new formatAsText()))
-        .apply("map to bigquery row", MapElements.via(new mapToBqRow()))
-        .apply("ingest to bq", BigQueryIO.writeTableRows()
-            .to(options.getOutput())
-            .withSchema(getTableSchema())
-            .withCreateDisposition(CreateDisposition.CREATE_IF_NEEDED)
-            .withWriteDisposition(WriteDisposition.WRITE_TRUNCATE));
-//        .apply("write to file", TextIO.write().to(options.getOutput()).withoutSharding());
+        .apply("map to string", MapElements.via(new formatAsText()))
+//        .apply("map to bigquery row", MapElements.via(new mapToBqRow()))
+//        .apply("ingest to bq", BigQueryIO.writeTableRows()
+//            .to(options.getOutput())
+//            .withSchema(getTableSchema())
+//            .withCreateDisposition(CreateDisposition.CREATE_IF_NEEDED)
+//            .withWriteDisposition(WriteDisposition.WRITE_TRUNCATE));
+        .apply("write to file", TextIO.write().to(options.getOutput()).withoutSharding());
 
     return p.run();
   }

@@ -135,7 +135,7 @@ public class WordCount {
     public PCollection<KV<String, Long>> expand(PCollection<String> lines) {
 
       // Convert lines of text into individual words.
-      PCollection<String> words = lines.apply(ParDo.of(new ExtractWordsFn()));
+//      PCollection<String> words = lines.apply(ParDo.of(new ExtractWordsFn()));
 //      OutputT apply = words.apply(new printDoFn());
 
       // Count the number of times each word occurs.

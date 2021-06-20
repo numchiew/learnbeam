@@ -10,7 +10,6 @@ public class Covid19Summary {
     PipelineOptionsFactory.register(WordCountOptions.class);
     WordCountOptions options = PipelineOptionsFactory.fromArgs(args).withValidation().as(WordCountOptions.class);
 
-    PipelineResult pr = new CovidPipelineExecutor().run(options);
-    System.out.println(pr.waitUntilFinish());
+    new CovidPipelineExecutor().run(options);
   }
 }
